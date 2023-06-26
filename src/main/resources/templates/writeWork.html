@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+
+
+        <div class="row">
+
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>作业信息</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>作业描述</th>
+                                    <th>布置日期</th>
+                                    <th>截止日期</th>
+                                    <th>布置人</th>
+                                    <th>提交人数</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="work:${list}">
+                                    <td th:text="${work.id}"></td>
+                                    <td th:text="${work.workname}"></td>
+                                    <td th:text="${work.statrtime}"></td>
+                                    <td th:text="${work.lasttime}"></td>
+                                    <td th:text="${work.teaname}"></td>
+                                    <td th:text="${work.countnum}"></td>
+                                    <td>
+                                        <span th:style="${work.status} ? 'display: block' : 'display: none'" class="label label-success">已提交</span>
+                                        <!-- Button trigger modal -->
+                                        <button type="button" th:onclick="'javascript:intext('+${work.id}+')'"  th:class="bbb+${work.id}" th:style="${work.status} ? 'display: none' : 'display: block'" th:attr="data-lasttime=${work.lasttime} ,data-workname=${work.workname},data-cityId=${work.id}" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" style="
+                                  font-size: 3px;
+                                  padding: 10px 13px;
+                                  line-height: 16px;">
+                                            提交作业
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <h4 class="modal-title" id="myModalLabel">提交作业</h4>
+                                                    </div>
+                                                    <form id="su_from">
+                                                    <div class="modal-body">
+                                                        <input type="hidden" id="te0" name="id">
+                                                        <dl class="dl-horizontal">
+                                                            <dt>作业描述：</dt>
+                                                            <dd id="te1"></dd>
+                                                        </dl>
+                                                        <dl class="dl-horizontal">
+                                                            <dt>截止事件：</dt>
+                                                            <dd id="te2"> <dd>
+                                                        </dl>
+                                                        <dl class="dl-horizontal">
+                                                            <dt>作业内容：</dt>
+                                                            <dd><textarea class="form-control" name="worktext" rows="3"></textarea><dd>
+                                                        </dl>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                        <button type="button" class="btn btn-primary" onclick="subWork()">提交作业</button>
+                                                    </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+
+                            <nav aria-label="Page navigation" style="padding-left: 46%;">
+                                <ul class="pagination pagination-lg">
+                                    <li th:class="${page1.getCurrent()-1 <=0 }? 'disabled' :' ' ">
+                                        <a   th:href="@{'/Stu/writeWork/' + ${page1.getCurrent()-1}}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li th:each="uid : ${#numbers.sequence(1,page1.getPages())}" th:class="${page1.getCurrent() == uid}? 'active' :' ' ">
+                                        <a  th:text="${uid}"
+                                            th:href="@{'/Stu/writeWork/' + ${uid}}"></a></li>
+
+                                    <li th:class="${page1.getCurrent()+1 >= page1.getPages() }? 'disabled' :' ' ">
+                                        <a   th:href="@{'/Stu/writeWork/' + ${page1.getCurrent()+1}}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+<script>
+    function intext(id){
+        let classname = "bbb"+id
+        let workid =document.getElementsByClassName(classname)[0].getAttribute("data-cityId")
+        let workname =document.getElementsByClassName(classname)[0].getAttribute("data-workname")
+        let lasttime =document.getElementsByClassName(classname)[0].getAttribute("data-lasttime")
+        document.getElementById("te1").innerText = workname
+        document.getElementById("te2").innerText = lasttime
+        document.getElementById("te0").value = workid
+    }
+
+    function subWork(){
+        $.ajax({
+            url:"/Stu/stuWork",
+            method:"POST",
+            data:$("#su_from").serialize(),
+            success:function (result){
+                alert(result.extend.mes)
+                location.reload()
+            }
+        })
+    }
+</script>
+</html>

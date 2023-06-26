@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+
+
+    <div class="row">
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>作业信息</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>操作</th>
+                                <th>交易耗时</th>
+                                <th>请求路径</th>
+                                <th>用户姓名</th>
+                                <th>时间</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="work:${list}">
+                                <td th:text="${work.id}"></td>
+                                <td th:text="${work.keeptime}"></td>
+                                <td th:text="${work.operation}"></td>
+                                <td th:text="${work.controllerurl}"></td>
+                                <td th:text="${work.username}"></td>
+                                <td th:text="${work.timedate}"></td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                        <nav aria-label="Page navigation" style="padding-left: 46%;">
+                            <ul class="pagination pagination-lg">
+                                <li th:class="${page1.getCurrent()-1 <=0 }? 'disabled' :' ' ">
+                                    <a   th:href="@{'/admin/log/' + ${page1.getCurrent()-1}}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li th:each="uid : ${#numbers.sequence(1,page1.getPages())}" th:class="${page1.getCurrent() == uid}? 'active' :' ' ">
+                                    <a  th:text="${uid}"
+                                        th:href="@{'/admin/log/' + ${uid}}"></a></li>
+
+                                <li th:class="${page1.getCurrent()+1 >= page1.getPages() }? 'disabled' :' ' ">
+                                    <a   th:href="@{'/admin/log/' + ${page1.getCurrent()+1}}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+<script>
+
+</script>
+</html>
